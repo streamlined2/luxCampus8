@@ -1,19 +1,34 @@
 package org.training.campus.list;
 
 import java.util.Iterator;
+import java.util.ListIterator;
 
 public class LinkedList<E> extends AbstractList<E> implements Deque<E> {
 
-	@Override
-	public void add(E value) {
-		// TODO Auto-generated method stub
-		
+	private static class Node<E> {
+		private final E data;
+		private Node<E> previous;
+		private Node<E> next;
+
+		private Node(E data) {
+			this.data = data;
+		}
+	}
+
+	private int size = 0;
+	private Node<E> head = null;
+	private Node<E> tail = null;
+
+	public LinkedList(E... data) {
+		for (E e : data) {
+			add(e);
+		}
 	}
 
 	@Override
 	public void add(E value, int index) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -35,63 +50,88 @@ public class LinkedList<E> extends AbstractList<E> implements Deque<E> {
 	}
 
 	@Override
-	public void clear() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public int size() {
-		// TODO Auto-generated method stub
-		return 0;
+		return size;
 	}
 
-	@Override
-	public boolean isEmpty() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	private static class LinkedListIterator<E> implements ListIterator<E> {
+		
+		private LinkedListIterator() {
+			
+		}
+		
+		private LinkedListIterator(int startIndex) {
+			
+		}
 
-	@Override
-	public boolean contains(E value) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+		@Override
+		public boolean hasNext() {
+			// TODO Auto-generated method stub
+			return false;
+		}
 
-	@Override
-	public int indexOf(E value) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+		@Override
+		public E next() {
+			// TODO Auto-generated method stub
+			return null;
+		}
 
-	@Override
-	public int indexOf(E value, int startIndex) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+		@Override
+		public boolean hasPrevious() {
+			// TODO Auto-generated method stub
+			return false;
+		}
 
-	@Override
-	public int lastIndexOf(E value) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+		@Override
+		public E previous() {
+			// TODO Auto-generated method stub
+			return null;
+		}
 
-	@Override
-	public int lastIndexOf(E value, int startIndex) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+		@Override
+		public int nextIndex() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
 
-	@Override
-	public Object[] toArray() {
-		// TODO Auto-generated method stub
-		return null;
+		@Override
+		public int previousIndex() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public void remove() {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void set(E e) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void add(E e) {
+			// TODO Auto-generated method stub
+
+		}
+
 	}
 
 	@Override
 	public Iterator<E> iterator() {
-		// TODO Auto-generated method stub
-		return null;
+		return listIterator();
 	}
 
+	@Override
+	public ListIterator<E> listIterator() {
+		return new LinkedListIterator<>();
+	}
+
+	@Override
+	public ListIterator<E> listIterator(int index) {
+		return new LinkedListIterator<>(index);
+	}
 }

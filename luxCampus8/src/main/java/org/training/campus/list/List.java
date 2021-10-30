@@ -1,5 +1,7 @@
 package org.training.campus.list;
 
+import java.util.ListIterator;
+
 public interface List<E> extends Iterable<E> {
 
 	void add(E value);
@@ -28,6 +30,10 @@ public interface List<E> extends Iterable<E> {
 
 	int lastIndexOf(E value, int startIndex);
 
-	public Object[] toArray();
+	Object[] toArray();
+
+	ListIterator<E> listIterator();
+
+	ListIterator<E> listIterator(int index);
 
 }
