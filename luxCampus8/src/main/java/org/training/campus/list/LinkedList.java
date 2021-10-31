@@ -2,11 +2,13 @@ package org.training.campus.list;
 
 import java.util.Iterator;
 import java.util.ListIterator;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 
 public class LinkedList<E> extends AbstractList<E> implements Deque<E> {
 
 	private static class Node<E> {
-		private final E data;
+		private E data;
 		private Node<E> previous;
 		private Node<E> next;
 
@@ -15,38 +17,47 @@ public class LinkedList<E> extends AbstractList<E> implements Deque<E> {
 		}
 	}
 
-	private int size = 0;
-	private Node<E> head = null;
-	private Node<E> tail = null;
+	private int size;
+	private Node<E> head;
+	private Node<E> tail;
+
+	public LinkedList() {
+		size = 0;
+		head = tail = null;
+	}
 
 	public LinkedList(E... data) {
+		this();
+		var i = listIterator();
 		for (E e : data) {
-			add(e);
+			i.add(e);
 		}
 	}
 
 	@Override
 	public void add(E value, int index) {
-		// TODO Auto-generated method stub
-
+		listIterator(index).add(value);
 	}
 
 	@Override
 	public E remove(int index) {
-		// TODO Auto-generated method stub
-		return null;
+		var i = listIterator(index);
+		E oldValue = i.next();
+		i.remove();
+		return oldValue;
 	}
 
 	@Override
 	public E get(int index) {
-		// TODO Auto-generated method stub
-		return null;
+		return listIterator(index).next();
 	}
 
 	@Override
 	public E set(E value, int index) {
-		// TODO Auto-generated method stub
-		return null;
+		var i = listIterator(index);
+		E oldValue = i.next();
+		i.set(value);
+		return oldValue;
 	}
 
 	@Override
@@ -54,62 +65,170 @@ public class LinkedList<E> extends AbstractList<E> implements Deque<E> {
 		return size;
 	}
 
-	private static class LinkedListIterator<E> implements ListIterator<E> {
-		
+	@Override
+	public Iterator<E> iterator() {
+		return listIterator();
+	}
+
+	@Override
+	public ListIterator<E> listIterator() {
+		return new LinkedListIterator();
+	}
+
+	@Override
+	public ListIterator<E> listIterator(int index) {
+		return new LinkedListIterator(index);
+	}
+
+	private class LinkedListIterator implements ListIterator<E> {
+		private Node<E> nextPointer;
+		private Node<E> prevPointer;
+		private int index;
+		private Node<E> actionPointer;
+
 		private LinkedListIterator() {
-			
+			nextPointer = head;
+			prevPointer = null;
+			index = 0;
+			actionPointer = null;
 		}
-		
+
+		private void shiftRight() {
+			prevPointer = nextPointer;
+			nextPointer = nextPointer.next;
+			index++;
+		}
+
+		private void shiftLeft() {
+			nextPointer = prevPointer;
+			prevPointer = prevPointer.previous;
+			index--;
+		}
+
+		private void moveLeftToRight(int moveToIndex) {
+			nextPointer = head;
+			prevPointer = null;
+			index = 0;
+			for (int k = 0; k < moveToIndex; k++) {
+				shiftRight();
+			}
+		}
+
+		private void moveRightToLeft(int moveToIndex) {
+			nextPointer = null;
+			prevPointer = tail;
+			index = size();
+			for (int k = size(); k > moveToIndex; k--) {
+				shiftLeft();
+			}
+		}
+
+		private void moveTo(int moveToIndex) {
+			if (moveToIndex < size() / 2) {
+				moveLeftToRight(moveToIndex);
+			} else {
+				moveRightToLeft(moveToIndex);
+			}
+		}
+
 		private LinkedListIterator(int startIndex) {
-			
+			this();
+			Objects.checkIndex(startIndex, size());
+			moveTo(startIndex);
 		}
 
 		@Override
 		public boolean hasNext() {
-			// TODO Auto-generated method stub
-			return false;
+			return Objects.nonNull(nextPointer);
 		}
 
 		@Override
 		public E next() {
-			// TODO Auto-generated method stub
-			return null;
+			if (Objects.isNull(nextPointer)) {
+				throw new NoSuchElementException("no more elements to the right, iterator exhausted");
+			}
+			E value = nextPointer.data;
+			actionPointer = nextPointer;
+			shiftRight();
+			return value;
 		}
 
 		@Override
 		public boolean hasPrevious() {
-			// TODO Auto-generated method stub
-			return false;
+			return Objects.nonNull(prevPointer);
 		}
 
 		@Override
 		public E previous() {
-			// TODO Auto-generated method stub
-			return null;
+			if (Objects.isNull(prevPointer)) {
+				throw new NoSuchElementException("no more elements to the left, iterator exhausted");
+			}
+			E value = prevPointer.data;
+			actionPointer = prevPointer;
+			shiftLeft();
+			return value;
 		}
 
 		@Override
 		public int nextIndex() {
-			// TODO Auto-generated method stub
-			return 0;
+			return index;
 		}
 
 		@Override
 		public int previousIndex() {
-			// TODO Auto-generated method stub
-			return 0;
+			return index - 1;
 		}
 
 		@Override
 		public void remove() {
-			// TODO Auto-generated method stub
+			if (Objects.isNull(actionPointer)) {
+				throw new IllegalStateException("either 'next' or 'previous' should be called first");
+			}
+			if (Objects.isNull(actionPointer.previous) && Objects.isNull(actionPointer.next)) {
+				removeLastNode();
+			} else if (Objects.isNull(actionPointer.previous)) {
+				removeHead();
+			} else if (Objects.isNull(actionPointer.next)) {
+				removeTail();
+			} else {
+				removeIntermediateNode();
+			}
+			actionPointer = null;
+			size--;
+		}
 
+		private void removeIntermediateNode() {
+			actionPointer.previous.next = actionPointer.next;
+			actionPointer.next.previous = actionPointer.previous;
+			if (actionPointer == prevPointer) {
+				prevPointer = nextPointer.previous;
+			} else {
+				nextPointer = prevPointer.next;
+			}
+		}
+
+		private void removeLastNode() {
+			head = tail = null;
+			nextPointer = prevPointer = null;
+			index = 0;
+		}
+
+		private void removeHead() {
+			nextPointer = head = actionPointer.next;
+			prevPointer = head.previous = null;
+			index = 0;
+		}
+
+		private void removeTail() {
+			prevPointer = tail = actionPointer.previous;
+			nextPointer = tail.next = null;
+			index = size - 1;
 		}
 
 		@Override
 		public void set(E e) {
-			// TODO Auto-generated method stub
-
+			actionPointer.data = e;
+			actionPointer = null;
 		}
 
 		@Override
@@ -120,18 +239,4 @@ public class LinkedList<E> extends AbstractList<E> implements Deque<E> {
 
 	}
 
-	@Override
-	public Iterator<E> iterator() {
-		return listIterator();
-	}
-
-	@Override
-	public ListIterator<E> listIterator() {
-		return new LinkedListIterator<>();
-	}
-
-	@Override
-	public ListIterator<E> listIterator(int index) {
-		return new LinkedListIterator<>(index);
-	}
 }

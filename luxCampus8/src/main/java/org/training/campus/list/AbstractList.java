@@ -12,7 +12,7 @@ public abstract class AbstractList<E> implements List<E> {
 
 	@Override
 	public void clear() {
-		final var i = iterator();
+		final var i = listIterator();
 		while (i.hasNext()) {
 			i.next();
 			i.remove();
@@ -36,10 +36,7 @@ public abstract class AbstractList<E> implements List<E> {
 
 	@Override
 	public int indexOf(E value, int startIndex) {
-		final var i = listIterator();
-		for (int k = 0; i.hasNext() && k < startIndex; k++) {
-			i.next();
-		}
+		final var i = listIterator(startIndex);
 		for (int k = startIndex; i.hasNext(); k++) {
 			if (Objects.equals(i.next(), value)) {
 				return k;
@@ -56,9 +53,6 @@ public abstract class AbstractList<E> implements List<E> {
 	@Override
 	public int lastIndexOf(E value, int startIndex) {
 		final var i = listIterator(size());
-		for (int k = size(); i.hasPrevious() && k > startIndex; k--) {
-			i.previous();
-		}
 		for (int k = startIndex; i.hasPrevious(); k--) {
 			if (Objects.equals(i.previous(), value)) {
 				return k;
