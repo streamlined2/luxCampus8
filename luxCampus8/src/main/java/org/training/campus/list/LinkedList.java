@@ -144,7 +144,7 @@ public class LinkedList<E> extends AbstractList<E> implements Deque<E> {
 
 		@Override
 		public E next() {
-			if (Objects.isNull(nextPointer)) {
+			if (!hasNext()) {
 				throw new NoSuchElementException("no more elements to the right, iterator exhausted");
 			}
 			E value = nextPointer.data;
@@ -160,7 +160,7 @@ public class LinkedList<E> extends AbstractList<E> implements Deque<E> {
 
 		@Override
 		public E previous() {
-			if (Objects.isNull(prevPointer)) {
+			if (!hasPrevious()) {
 				throw new NoSuchElementException("no more elements to the left, iterator exhausted");
 			}
 			E value = prevPointer.data;
@@ -233,8 +233,43 @@ public class LinkedList<E> extends AbstractList<E> implements Deque<E> {
 
 		@Override
 		public void add(E e) {
-			// TODO Auto-generated method stub
+			var newNode = new Node<>(e);
+			if (Objects.isNull(prevPointer) && Objects.isNull(nextPointer)) {
+				addFirstNode(newNode);
+			} else if (Objects.isNull(prevPointer)) {
+				addHead(newNode);
+			} else if (Objects.isNull(nextPointer)) {
+				addTail(newNode);
+			} else {
+				addIntermediateNode(newNode);
+			}
+			index++;
+			size++;
+		}
 
+		private void addIntermediateNode(Node<E> node) {
+			node.previous = prevPointer;
+			node.next = nextPointer;
+			nextPointer.previous = prevPointer.next = node;
+			prevPointer = node;
+		}
+
+		private void addTail(Node<E> node) {
+			node.previous = tail;
+			tail.next = node;
+			prevPointer = tail = node;
+		}
+
+		private void addHead(Node<E> node) {
+			node.next = head;
+			head.previous = node;
+			prevPointer = head = node;
+		}
+
+		private void addFirstNode(Node<E> node) {
+			head = tail = node;
+			nextPointer = null;
+			prevPointer = node;
 		}
 
 	}
