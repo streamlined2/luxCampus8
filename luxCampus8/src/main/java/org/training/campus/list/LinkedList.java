@@ -41,6 +41,7 @@ public class LinkedList<E> extends AbstractList<E> {
 
 	@Override
 	public E remove(int index) {
+		Objects.checkIndex(index, size());
 		var i = listIterator(index);
 		E oldValue = i.next();
 		i.remove();
@@ -49,11 +50,13 @@ public class LinkedList<E> extends AbstractList<E> {
 
 	@Override
 	public E get(int index) {
+		Objects.checkIndex(index, size());
 		return listIterator(index).next();
 	}
 
 	@Override
 	public E set(E value, int index) {
+		Objects.checkIndex(index, size());
 		var i = listIterator(index);
 		E oldValue = i.next();
 		i.set(value);
@@ -133,7 +136,7 @@ public class LinkedList<E> extends AbstractList<E> {
 
 		private LinkedListIterator(int startIndex) {
 			this();
-			Objects.checkIndex(startIndex, size()+1);
+			Objects.checkIndex(startIndex, size() + 1);
 			moveTo(startIndex);
 		}
 
