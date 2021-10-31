@@ -5,7 +5,7 @@ import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
-public class LinkedList<E> extends AbstractList<E> implements Deque<E> {
+public class LinkedList<E> extends AbstractList<E> {
 
 	private static class Node<E> {
 		private E data;
@@ -133,7 +133,7 @@ public class LinkedList<E> extends AbstractList<E> implements Deque<E> {
 
 		private LinkedListIterator(int startIndex) {
 			this();
-			Objects.checkIndex(startIndex, size());
+			Objects.checkIndex(startIndex, size()+1);
 			moveTo(startIndex);
 		}
 
