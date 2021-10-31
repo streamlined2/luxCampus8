@@ -81,27 +81,51 @@ class LinkedListTest {
 		assertEquals(-1, list.indexOf("Z"));
 	}
 
+	@Test
+	@DisplayName("testing indexOf method with starting index")
+	void testIndexOfStartingIndex() {
+		final var list = new LinkedList<>("A", "B", "C", "A", "B", "C", "A", "B", "C");
+		assertEquals(0, list.indexOf("A",0));
+		assertEquals(3, list.indexOf("A",1));
+		assertEquals(6, list.indexOf("A",4));
+		assertEquals(-1, list.indexOf("A",7));
+		assertEquals(1, list.indexOf("B",0));
+		assertEquals(4, list.indexOf("B",2));
+		assertEquals(7, list.indexOf("B",5));
+		assertEquals(-1, list.indexOf("B",8));
+	}
+
+	@Test
+	@DisplayName("testing lastIndexOf method")
+	void testLastIndexOf() {
+		final var list = new LinkedList<>("A", "B", "C");
+		assertEquals(0, list.lastIndexOf("A"));
+		assertEquals(1, list.lastIndexOf("B"));
+		assertEquals(2, list.lastIndexOf("C"));
+		assertEquals(-1, list.lastIndexOf("X"));
+		assertEquals(-1, list.lastIndexOf("Y"));
+		assertEquals(-1, list.lastIndexOf("Z"));
+	}
+
+	@Test
+	@DisplayName("testing lastIndexOf method with starting index")
+	void testLastIndexOfStartingIndex() {
+		final var list = new LinkedList<>("A", "B", "C", "A", "B", "C", "A", "B", "C");
+		assertEquals(6, list.lastIndexOf("A",8));
+		assertEquals(3, list.lastIndexOf("A",5));
+		assertEquals(0, list.lastIndexOf("A",2));
+		assertEquals(0, list.lastIndexOf("A",1));
+		assertEquals(-1, list.lastIndexOf("A",0));
+		assertEquals(7, list.lastIndexOf("B",8));
+		assertEquals(4, list.lastIndexOf("B",7));
+		assertEquals(4, list.lastIndexOf("B",6));
+		assertEquals(1, list.lastIndexOf("B",3));
+		assertEquals(1, list.lastIndexOf("B",2));
+		assertEquals(-1, list.lastIndexOf("B",1));
+		assertEquals(-1, list.lastIndexOf("B",0));
+	}
+
 /*
-	@Test
-	void testIndexOfE() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	void testIndexOfEInt() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	void testLastIndexOfE() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	void testLastIndexOfEInt() {
-		fail("Not yet implemented");
-	}
-
 	@Test
 	void testAddEInt() {
 		fail("Not yet implemented");
@@ -119,11 +143,6 @@ class LinkedListTest {
 
 	@Test
 	void testSet() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	void testSize() {
 		fail("Not yet implemented");
 	}
 

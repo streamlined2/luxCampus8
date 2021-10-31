@@ -37,9 +37,10 @@ public abstract class AbstractList<E> implements List<E> {
 	@Override
 	public int indexOf(E value, int startIndex) {
 		final var i = listIterator(startIndex);
-		for (int k = startIndex; i.hasNext(); k++) {
+		while(i.hasNext()) {
+			final int index = i.nextIndex();
 			if (Objects.equals(i.next(), value)) {
-				return k;
+				return index;
 			}
 		}
 		return -1;
@@ -47,15 +48,16 @@ public abstract class AbstractList<E> implements List<E> {
 
 	@Override
 	public int lastIndexOf(E value) {
-		return lastIndexOf(value, size() - 1);
+		return lastIndexOf(value, size());
 	}
 
 	@Override
 	public int lastIndexOf(E value, int startIndex) {
-		final var i = listIterator(size());
-		for (int k = startIndex; i.hasPrevious(); k--) {
+		final var i = listIterator(startIndex);
+		while(i.hasPrevious()) {
+			final int index = i.previousIndex();
 			if (Objects.equals(i.previous(), value)) {
-				return k;
+				return index;
 			}
 		}
 		return -1;
